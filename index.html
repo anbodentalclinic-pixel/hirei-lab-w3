@@ -1,0 +1,774 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>比例ラボ 第3週</title>
+<meta name="description" content="中1数学 反比例(式・グラフ)と、比例・反比例の文章題を5ステップで解くゲーム">
+<meta name="theme-color" content="#63B7F2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="比例ラボ">
+<link rel="icon" type="image/png" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Zen+Kaku+Gothic+New:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sky:#63B7F2; --panel:#FFF6DC; --text:#1E1B3A; --line:#1E1B3A; --sub:#4B4668;
+  --coin:#FFC928; --onCoin:#1E1B3A; --blue:#2F6FD6; --onBlue:#FFFFFF;
+  --chip:#FFFFFF; --goodbg:#D9F3E0; --badbg:#FFE0DA; --fbtext:#1E1B3A;
+  --grass:#4FBF45; --ground:#9A5B2A; --grid:#D9CFAE; --axis:#1E1B3A; --lineplot:#2F6FD6;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --sky:#18234A; --panel:#262B45; --text:#F3EEDB; --line:#05070F; --sub:#C2BCDD;
+    --coin:#FFC928; --onCoin:#1E1B3A; --blue:#7FA9FF; --onBlue:#0E1430;
+    --chip:#353B5E; --goodbg:#1F4A31; --badbg:#5A2525; --fbtext:#F3EEDB;
+    --grass:#2F7F3A; --ground:#5E3818; --grid:#3E4468; --axis:#F3EEDB; --lineplot:#7FA9FF;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --sky:#18234A; --panel:#262B45; --text:#F3EEDB; --line:#05070F; --sub:#C2BCDD;
+  --coin:#FFC928; --onCoin:#1E1B3A; --blue:#7FA9FF; --onBlue:#0E1430;
+  --chip:#353B5E; --goodbg:#1F4A31; --badbg:#5A2525; --fbtext:#F3EEDB;
+  --grass:#2F7F3A; --ground:#5E3818; --grid:#3E4468; --axis:#F3EEDB; --lineplot:#7FA9FF;
+  color-scheme: dark;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--sky);}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--sky);color:var(--text);font-family:'DotGothic16','Zen Kaku Gothic New',system-ui,sans-serif;font-size:18px;line-height:1.5;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:480px;margin:0 auto;padding:16px 16px 0}
+.panel{background:var(--panel);border:3px solid var(--line);box-shadow:5px 5px 0 var(--line);padding:16px;margin-bottom:18px}
+button{font-family:inherit;color:inherit}
+.btn{font-size:20px;background:var(--coin);color:var(--onCoin);border:3px solid var(--line);box-shadow:4px 4px 0 var(--line);padding:10px 16px;min-height:52px;cursor:pointer;touch-action:manipulation}
+.btn:active:not(:disabled){transform:translate(3px,3px);box-shadow:1px 1px 0 var(--line)}
+.btn:disabled{opacity:.35;cursor:default}
+.btn.plain{background:var(--chip);color:var(--text)}
+.btn.blue{background:var(--blue);color:var(--onBlue)}
+.btn.wide{width:100%}
+:focus-visible{outline:3px dashed var(--blue);outline-offset:3px}
+.hint{font-family:'Zen Kaku Gothic New',system-ui,sans-serif}
+.snd{display:inline-flex;align-items:center;gap:6px;font-size:16px;min-height:44px;padding:6px 10px}
+.titlebar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px}
+
+/* title */
+.hero{display:flex;align-items:center;gap:14px}
+.hero h1{margin:0;font-size:40px;line-height:1.1;font-weight:400}
+.hero p{margin:4px 0 0;color:var(--sub);font-size:16px}
+.bob{animation:bob 1.6s steps(2) infinite}
+@keyframes bob{50%{transform:translateY(-4px)}}
+.coins{display:inline-flex;align-items:center;gap:6px;font-size:20px}
+.stagebtn{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;text-align:left;margin-bottom:12px;background:var(--chip);color:var(--text)}
+.stagebtn .nm{font-size:22px;display:block}
+.stagebtn .ds{font-family:'Zen Kaku Gothic New',system-ui,sans-serif;font-size:14px;color:var(--sub);display:block}
+.stars{font-size:20px;color:var(--coin);white-space:nowrap;-webkit-text-stroke:1px var(--line)}
+.stars .off{color:transparent}
+.record{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;text-align:center}
+.record div{border:2px solid var(--line);padding:6px 4px;background:var(--chip)}
+.record b{display:block;font-size:24px;font-weight:400}
+.record span{font-size:13px;font-family:'Zen Kaku Gothic New',system-ui,sans-serif;color:var(--sub)}
+h2{font-size:20px;font-weight:400;margin:0 0 10px}
+
+/* play */
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px}
+.top .btn{min-height:44px;min-width:44px;font-size:16px;padding:6px 10px;white-space:nowrap}
+.top .prog{flex:1;text-align:center}
+.prog{font-size:18px}
+.hearts{display:inline-flex;gap:3px}
+.eq{text-align:center;font-size:34px;margin:4px 0 8px}
+.ask{text-align:center;font-size:20px;margin:6px 0 12px}
+.fr{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;font-size:.62em;line-height:1.1;margin:0 .1em}
+.fr span:first-child{border-bottom:2px solid currentColor;padding:0 .15em}
+.tblbox{overflow-x:auto}
+table.tbl{border-collapse:collapse;margin:0 auto;font-size:18px}
+.tbl th,.tbl td{border:2px solid var(--line);min-width:38px;padding:6px 2px;text-align:center}
+.tbl th{background:var(--grid)}
+.tbl td.q{background:var(--coin);color:var(--onCoin)}
+.tpl{display:flex;align-items:center;justify-content:center;gap:10px;font-size:24px;margin:6px 0}
+.box{width:84px;height:60px;border:3px dashed var(--line);background:var(--chip);font-size:24px;cursor:pointer}
+.box.fill{border-style:solid}
+.line2{text-align:center;font-size:22px;margin:6px 0}
+.ans{display:inline-block;min-width:60px;border-bottom:3px solid var(--line);padding:0 6px}
+.chips{display:flex;justify-content:center;gap:16px;margin-top:6px}
+.chips .btn{background:var(--chip);color:var(--text);font-size:28px;min-width:100px;min-height:60px}
+.signs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.signs .btn{font-size:21px;min-height:64px}
+.keypad{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.keypad .btn{background:var(--chip);color:var(--text);font-size:26px;min-height:56px;padding:4px}
+.keypad .btn.on{background:var(--blue);color:var(--onBlue)}
+.keypad .ok{grid-column:1 / -1;background:var(--coin);color:var(--onCoin)}
+.steps{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;margin:0 0 10px}
+.steps span{font-size:13px;padding:2px 5px;border:2px solid var(--line);background:var(--chip);color:var(--sub)}
+.steps .cur{background:var(--coin);color:var(--onCoin)}
+.steps .okd{background:var(--goodbg);color:var(--fbtext)}
+.note{background:var(--chip);border:2px solid var(--line);padding:4px 14px}
+.nl{font-size:22px;min-height:44px;display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap}
+.nl+.nl{border-top:2px dashed var(--grid)}
+.nl.muted{color:var(--sub);font-size:16px}
+.nl.fin{font-size:30px;color:var(--blue)}
+.nl .tag{font-size:14px;border:2px solid var(--line);padding:0 6px;background:var(--goodbg);color:var(--fbtext)}
+mark{background:var(--coin);color:var(--onCoin);padding:0 4px}
+.forms{display:grid;gap:10px}
+.forms .btn{font-size:24px;background:var(--chip);color:var(--text)}
+.rules{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.rules li{display:flex;gap:10px;align-items:center;font-family:'Zen Kaku Gothic New',system-ui,sans-serif;font-size:16px}
+.rules b{font-family:'DotGothic16',sans-serif;font-weight:400;display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;flex-shrink:0;background:var(--coin);color:var(--onCoin);border:2px solid var(--line)}
+.fb{border:3px solid var(--line);padding:10px 12px;font-size:16px;line-height:1.65;margin-bottom:14px;color:var(--fbtext)}
+.fb.good{background:var(--goodbg)}
+.fb.bad{background:var(--badbg)}
+.fb b{font-weight:700}
+.graph{display:block;width:100%;max-width:300px;margin:0 auto}
+.graph .gl{stroke:var(--grid);stroke-width:1}
+.graph .ax{stroke:var(--axis);stroke-width:2}
+.graph .pl{stroke:var(--lineplot);stroke-width:3}
+.graph text{fill:var(--text);font-family:'DotGothic16',sans-serif;font-size:14px}
+.cap{font-family:'Zen Kaku Gothic New',system-ui,sans-serif;font-size:13px;color:var(--sub);text-align:center;margin:6px 0 0}
+.done{font-size:30px;text-align:center;margin:4px 0}
+.result{text-align:center}
+.result .big{font-size:44px;margin:4px 0}
+.row{display:flex;gap:12px}
+.row .btn{flex:1}
+.ground{height:44px;margin-top:10px;border-top:3px solid var(--line);background:linear-gradient(var(--grass) 0 12px,var(--ground) 12px)}
+.coord{display:flex;align-items:center;justify-content:center;gap:8px;font-size:30px;margin:12px 0 0}
+.slot{width:86px;height:58px;border:3px dashed var(--line);background:var(--chip);font-size:28px;cursor:pointer}
+.slot.act{border-style:solid;background:var(--coin);color:var(--onCoin)}
+.coordlab{display:flex;justify-content:center;gap:58px;font-family:'Zen Kaku Gothic New',system-ui,sans-serif;font-size:13px;color:var(--sub);margin-top:2px}
+svg.tapgrid{cursor:crosshair;touch-action:manipulation}
+.graph text.tk{font-size:10px;fill:var(--sub)}
+.graph text.lb{font-size:14px;fill:var(--text)}
+.graph{max-width:340px}
+.bigc{font-size:26px}
+.muted2{color:var(--sub);font-size:16px}
+@media (prefers-reduced-motion: reduce){.bob{animation:none}}
+.kwbar{display:grid;gap:8px;margin-bottom:12px}
+.kw{display:flex;align-items:center;gap:8px;border:3px solid var(--line);padding:6px 10px;background:var(--chip)}
+.kw i{font-style:normal;display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;color:#FFFFFF;font-size:15px}
+.kw.k1 i{background:#2F6FD6}.kw.k2 i{background:#B4541A}
+.kw b{font-weight:400;font-size:19px}.kw span{display:block;font-family:'Zen Kaku Gothic New',system-ui,sans-serif;font-size:12.5px;color:var(--sub)}
+.kwt{display:inline-block;font-family:'DotGothic16',sans-serif;font-size:13px;color:#FFFFFF;background:#2F6FD6;padding:1px 8px;margin-bottom:4px}
+.kwt.k2{background:#B4541A}
+.wtext{font-family:'Zen Kaku Gothic New',system-ui,sans-serif;font-size:18px;line-height:1.7;font-weight:700;text-align:center;margin:6px 0 10px}
+.qtext{text-align:left;font-size:16.5px;background:var(--chip);border:2px solid var(--line);padding:8px 10px}
+.choices{display:grid;gap:10px}.choices.two{grid-template-columns:repeat(2,minmax(0,1fr))}.choices.three{grid-template-columns:repeat(3,minmax(0,1fr))}.choices.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+.choices .btn{background:var(--chip);color:var(--text);font-size:20px;text-align:center}
+.choices .btn.small{font-family:'Zen Kaku Gothic New',system-ui,sans-serif;font-size:16px;font-weight:700}
+.choices .btn.on{background:var(--blue);color:var(--onBlue)}
+.choices.four .btn{font-size:17px;padding:6px 2px}
+.tbl td.calc{background:var(--goodbg);color:var(--fbtext);font-size:15px}.tbl th.sm{font-size:13px}
+.tblbox{padding-bottom:4px}.tblbox + .note,.mcardb + .note{margin-top:12px}
+.mcardb{border:2px solid var(--line);background:var(--chip);padding:4px;margin-bottom:8px}.mpic{display:block;width:100%;height:auto;aspect-ratio:280/100}
+.vt{font-family:'Zen Kaku Gothic New',sans-serif;font-size:12px;font-weight:700;fill:var(--text)}
+.mstat{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:10px 0 4px}
+.mstat span{font-size:13px;padding:2px 8px;border:2px solid var(--line);background:var(--chip);color:var(--sub)}.mstat span.okd{background:var(--goodbg);color:var(--fbtext)}
+.ansline{font-size:18px;background:#FFF4E8;color:#1E1B3A}
+.slot2{display:inline-block;min-width:44px;border-bottom:3px solid #B4541A;text-align:center;margin:0 3px}
+.graph text.tk{font-size:9px;fill:var(--sub)}.graph text.lb{font-size:13px;fill:var(--text)}.graph{max-width:340px}
+svg.tapgrid{cursor:crosshair;touch-action:manipulation}
+.kw.k3 i{background:#2E7D3E}.kwt.k3{background:#2E7D3E}
+.scenebox{border:2px solid var(--line);background:var(--chip);margin-bottom:8px}.scenebox.small svg{max-height:110px}
+.scene{display:block;width:100%;height:auto;aspect-ratio:300/170;margin:0 auto}
+.scene .st{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:700}
+@keyframes scAp{0%{opacity:0}12%,88%{opacity:1}100%{opacity:1}}
+.scene .ap{opacity:0;animation:scAp 4s ease-out infinite}
+@keyframes scAp2{0%,70%{opacity:0}80%,100%{opacity:1}}
+.scene .ap2{animation:scAp2 4s infinite}
+@keyframes scSpin{to{transform:rotate(360deg)}}
+.scene .spin{transform-box:fill-box;transform-origin:center;animation:scSpin linear infinite}.scene .spin.rev{animation-direction:reverse}
+@keyframes scRise{0%{transform:scaleY(.04)}85%,100%{transform:scaleY(.82)}}
+.scene .rise{transform-box:fill-box;transform-origin:bottom;animation:scRise 6s steps(9,end) infinite}
+@keyframes scFlow{50%{opacity:.4}}.scene .flow{animation:scFlow .6s infinite}
+@keyframes scShrink{0%,30%{transform:scaleX(1)}60%,100%{transform:scaleX(.83)}}
+.scene .shrink{transform-box:fill-box;transform-origin:left;animation:scShrink 4s infinite}
+@keyframes scGlow{50%{opacity:.6}}.scene .glow{animation:scGlow 1.2s infinite}
+@keyframes scRide{0%{transform:translateX(0)}80%,100%{transform:translateX(230px)}}
+.scene .ride{animation:scRide 6s steps(4,end) infinite}
+@keyframes scCyc{0%,30%{opacity:1}34%,100%{opacity:0}}
+.scene .cyc{opacity:0;animation:scCyc 6s infinite}
+@media (prefers-reduced-motion: reduce){.scene *{animation:none!important;opacity:1!important}.scene .cyc{opacity:0!important}.scene .cyc:first-of-type{opacity:1!important}}
+</style>
+</head>
+<body>
+<div class="wrap"><main id="app" aria-live="polite"></main></div>
+<div class="ground" aria-hidden="true"></div>
+<script>
+(function(){
+/* ====== 進捗記録の設定(GitHub Pages で使うとき) ======
+   Google Apps Script の「ウェブアプリURL」と、合言葉を入れてください。
+   空のままなら記録は送られません。 */
+var LOG_URL = '';
+var LOG_KEY = '';
+/* ================================================ */
+var RM = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+var KEY='hireiLabW3';
+function load(){try{var v=localStorage.getItem(KEY);if(v)return JSON.parse(v);}catch(e){}return null;}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(save));}catch(e){}}
+var save=load()||{};
+save.stars=save.stars||{}; save.coins=save.coins||0; save.miss=save.miss||{swap:0,sign:0,calc:0};
+if(save.sound===undefined)save.sound=true;
+save.queue=save.queue||[];
+save.device=save.device||Math.random().toString(36).slice(2,8);
+
+/* ---------- progress log ---------- */
+function calcStars(){var n=G.st.n,f=G.firstOK;return G.over?0:(f===n?3:(f>=n-2?2:1));}
+function logResult(result){
+  if(!LOG_URL||!G)return;
+  var answered=Math.min(G.st.n,G.i+(G.done?1:0)+(result==='ゲームオーバー'?1:0));
+  save.queue.push({
+    key:LOG_KEY, app:'比例ラボ 第3週', stage:G.st.name, result:result,
+    answered:answered, total:G.st.n, firstOK:G.firstOK, stars:result==='途中でやめた'?0:calcStars(),
+    swap:G.ms.swap, sign:G.ms.sign, calc:G.ms.calc,
+    seconds:Math.round((Date.now()-G.t0)/1000), device:save.device,
+    clientTime:new Date().toLocaleString('ja-JP')
+  });
+  if(save.queue.length>100)save.queue=save.queue.slice(-100);
+  persist(); flush();
+}
+var flushing=false;
+function flush(){
+  if(!LOG_URL||flushing||!save.queue.length||!window.fetch)return;
+  flushing=true;
+  fetch(LOG_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(save.queue[0])})
+    .then(function(){save.queue.shift();persist();flushing=false;flush();})
+    .catch(function(){flushing=false;});
+}
+window.addEventListener('online',flush);
+
+/* ---------- sound (8bit, Web Audio) ---------- */
+var actx=null;
+function ac(){
+  if(!actx){var C=window.AudioContext||window.webkitAudioContext;if(!C)return null;try{actx=new C();}catch(e){return null;}}
+  if(actx.state==='suspended')actx.resume();
+  return actx;
+}
+function tone(f,st,dur,type,vol,to){
+  if(!save.sound)return;var c=ac();if(!c)return;
+  var t=c.currentTime+st,o=c.createOscillator(),g=c.createGain();
+  o.type=type||'square';o.frequency.setValueAtTime(f,t);
+  if(to)o.frequency.exponentialRampToValueAtTime(to,t+dur);
+  g.gain.setValueAtTime(vol||0.07,t);g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+dur+0.03);
+}
+var SFX={
+  tap:function(){tone(660,0,0.05,'square',0.035);},
+  place:function(){tone(523,0,0.07,'square',0.06);tone(784,0.06,0.07,'square',0.05);},
+  step:function(){tone(784,0,0.08);tone(1175,0.08,0.14);},
+  coin:function(){tone(988,0,0.07,'square',0.07);tone(1319,0.07,0.3,'square',0.07);},
+  wrong:function(){tone(196,0,0.12,'square',0.07);tone(147,0.12,0.25,'square',0.07);},
+  heart:function(){tone(440,0.05,0.35,'sawtooth',0.05,110);},
+  jumps:function(n,gap){for(var i=0;i<n;i++)tone(320,i*gap,0.12,'square',0.04,760);},
+  start:function(){[523,659,784].forEach(function(f,i){tone(f,i*0.07,0.09,'square',0.06);});},
+  clear:function(){[523,659,784,1047,0,784,1047].forEach(function(f,i){if(f)tone(f,i*0.11,0.15,'square',0.07);});tone(1568,0.8,0.5,'square',0.06);},
+  over:function(){[392,330,262,196].forEach(function(f,i){tone(f,i*0.2,0.24,'triangle',0.1);});}
+};
+function soundBtn(compact){
+  var on=save.sound;
+  return '<button class="btn plain snd" data-act="sound" aria-pressed="'+on+'" aria-label="効果音 '+(on?'オン':'オフ')+'">'
+   +'<svg width="22" height="20" viewBox="0 0 11 10" aria-hidden="true"><path d="M0 3h2l3-3h1v10H5L2 7H0z" fill="currentColor"/>'
+   +(on?'<path d="M7 3v1h1v2H7v1h1V6h1V4H8V3zM9 1v1h1v6H9v1h1V8h1V2h-1V1z" fill="currentColor"/>':'<path d="M7 3l4 4M11 3l-4 4" stroke="currentColor" stroke-width="1.2"/>')
+   +'</svg>'+(compact?'':'<span>'+(on?'音 ON':'音 OFF')+'</span>')+'</button>';
+}
+
+function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){var t=a%b;a=b;b=t;}return a;}
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function sgn(){return Math.random()<.5?-1:1;}
+function M(n){return n<0?'−'+Math.abs(n):String(n);}
+function P(n){return n<0?'('+M(n)+')':M(n);}
+function frac(n,d){if(d===1)return M(n);return (n<0?'−':'')+'<span class="fr"><span>'+Math.abs(n)+'</span><span>'+d+'</span></span>';}
+function eqn(n,d){if(d===1&&n===1)return 'y = x';if(d===1&&n===-1)return 'y = −x';return 'y = '+frac(n,d)+'x';}
+
+var STAGES=[
+  {id:'meet',name:'反比例ってなに?',desc:'あめ・長方形・ひもで「かけると同じ」を見つけよう',n:3},
+  {id:'shiki',name:'反比例の式',desc:'形→代入→かっこ→符号→計算→たしかめ',n:6},
+  {id:'graph',name:'反比例のグラフ',desc:'点を打って曲線を作ろう/グラフから式',n:6},
+  {id:'quest',name:'文章題クエスト',desc:'5ステップで「答えの文」までクリア',n:5},
+  {id:'boss',name:'ボス戦',desc:'全部まぜて8問。ハートは3つ',n:8}
+];
+var GR=6,C=150,U=21;
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=rnd(0,i),t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function fracH(n,d){return '<span class="fr"><span>'+n+'</span><span>'+d+'</span></span>';}
+function invEq(a){return 'y = '+(a<0?'−':'')+fracH(Math.abs(a),'x');}
+
+/* ---------- data ---------- */
+var MEET=[
+ {t:'24個のあめを x 人で同じ数ずつ分けると、1人分は y 個',c:24,xs:[1,2,3,4,6,8,12],v:'candy'},
+ {t:'面積が 18マスの長方形を作る。横を x マスにすると、縦は y マス',c:18,xs:[1,2,3,6,9],v:'rect'},
+ {t:'120cm のひもを x 本に等分すると、1本の長さは y cm',c:120,xs:[2,3,4,5,6,8,10],v:'string'}];
+var QUEST=[
+ {v:'wire',ask:['針金の長さ (m)', '針金の重さ (g)', '1mあたりの重さ (g)'],t:'同じ針金を 2m 切りとって重さをはかったら 30g だった。この針金 x m の重さを y g とする。この針金 120g 分の長さは何 m?',xw:'針金の長さ',yw:'針金の重さ',k:'prop',c:15,x0:2,y0:30,tx:4,w:'重さ = 1mの重さ × 長さ',wo:['重さ = 長さ ÷ 1mの重さ','重さ = 長さ + 1mの重さ'],known:'y',kv:120,ans:8,unit:'m',units:['g','m','cm'],pre:'この針金 120g 分の長さは',lines:['120 = 15 × x','x = 120 ÷ 15']},
+ {v:'gear',ask:['Bの1分間の回転数 (回転)', 'Bの歯の数 (個)', 'Aの1分間の回転数 (回転)'],t:'歯の数が 24 の歯車Aが1分間に10回転して、歯の数が x の歯車Bをまわす。Bは1分間に y 回転する。Bの歯の数が 40 のとき、Bは1分間に何回転する?',xw:'Bの歯の数',yw:'Bの回転数',k:'inv',c:240,x0:24,y0:10,tx:48,w:'歯の数 × 回転数 = いつも 240',wo:['回転数 = 歯の数 × 10','回転数 = 歯の数 + 10'],known:'x',kv:40,ans:6,unit:'回転',units:['回転','個','秒'],pre:'Bの歯の数が 40 のとき、1分間に',lines:['y = 240 ÷ 40']},
+ {v:'oven',ask:['あたためる時間 (秒)', '電子レンジの出力 (W)', 'お弁当の数 (個)'],t:'出力 500W で 60秒あたためるお弁当がある。出力を x W にすると y 秒かかる。600W なら何秒あたためればよい?',xw:'電子レンジの出力',yw:'あたためる時間',k:'inv',c:30000,x0:500,y0:60,tx:1000,w:'出力 × 時間 = いつも 30000',wo:['時間 = 出力 × 60','時間 = 出力 − 440'],known:'x',kv:600,ans:50,unit:'秒',units:['秒','W','分'],pre:'600W なら',lines:['y = 30000 ÷ 600']},
+ {v:'tank',ask:['水を入れる時間 (分)', 'たまった水の量 (L)', '1分間に入れる水の量 (L)'],t:'空の水そうに毎分 4L ずつ水を入れる。x 分後の水の量を y L とする。水が 36L になるのは何分後?',xw:'入れた時間',yw:'水の量',k:'prop',c:4,x0:1,y0:4,tx:3,w:'水の量 = 1分間の量 × 時間',wo:['水の量 = 時間 ÷ 4','水の量 = 時間 + 4'],known:'y',kv:36,ans:9,unit:'分後',units:['分後','L','回'],pre:'水が 36L になるのは',lines:['36 = 4 × x','x = 36 ÷ 4']},
+ {v:'rope',ask:['等分する本数 (本)', '1本の長さ (cm)', 'ひも全体の長さ (cm)'],t:'120cm のひもを x 本に等分すると、1本の長さは y cm。1本を 8cm にするには、何本に等分すればよい?',xw:'本数',yw:'1本の長さ',k:'inv',c:120,x0:2,y0:60,tx:4,w:'本数 × 1本の長さ = いつも 120',wo:['1本の長さ = 本数 × 120','1本の長さ = 120 − 本数'],known:'y',kv:8,ans:15,unit:'本',units:['本','cm','回'],pre:'1本を 8cm にするには',lines:['8 = 120 ÷ x','x = 120 ÷ 8']},
+ {v:'bike',ask:['走る時間 (時間)', '進む道のり (km)', '自転車の速さ (km)'],t:'自転車で時速 15km で走る。x 時間に進む道のりを y km とする。60km 進むには何時間かかる?',xw:'走る時間',yw:'進む道のり',k:'prop',c:15,x0:1,y0:15,tx:2,w:'道のり = 速さ × 時間',wo:['道のり = 時間 ÷ 速さ','道のり = 速さ + 時間'],known:'y',kv:60,ans:4,unit:'時間',units:['時間','km','分'],pre:'60km 進むには',lines:['60 = 15 × x','x = 60 ÷ 15']},
+ {v:'rect',ask:['縦の長さ (cm)', '横の長さ (cm)', '長方形の面積 (cm²)'],t:'面積が 36cm² の長方形で、横を x cm、縦を y cm とする。横が 9cm のとき、縦は何 cm?',xw:'横の長さ',yw:'縦の長さ',k:'inv',c:36,x0:4,y0:9,tx:12,w:'横 × 縦 = いつも 36',wo:['縦 = 横 × 36','縦 = 36 − 横'],known:'x',kv:9,ans:4,unit:'cm',units:['cm','cm²','m'],pre:'横が 9cm のとき、縦は',lines:['y = 36 ÷ 9']}];
+var AVALS=[6,8,12,18,20,24,30];
+function divisors(a){var d=[];for(var i=1;i<=Math.abs(a);i++)if(a%i===0)d.push(i);return d;}
+function genFind(){var a,x,y;do{a=AVALS[rnd(0,AVALS.length-1)]*sgn();var ds=divisors(a).filter(function(v){return v<=6;});x=ds[rnd(0,ds.length-1)]*sgn();y=a/x;}while(Math.abs(x)===Math.abs(y));return {type:'find',a:a,x:x,y:y,flip:Math.random()<.5};}
+function genTable(){var a=[6,12,24][rnd(0,2)]*sgn();var xs=[-6,-3,-2,-1,1,2,3,6].filter(function(v){return a%v===0;}),ask;do{ask=xs[rnd(0,xs.length-1)];}while(Math.abs(ask)===1);return {type:'table',a:a,xs:[-3,-2,-1,1,2,3],ask:ask,y:a/ask};}
+function fixTable(q){if(q.xs.indexOf(q.ask)<0){q.xs=[-6,-3,-2,2,3,6];}return q;}
+var GAS=[4,6,8,12];
+function genGraph(t){return {type:t,a:GAS[rnd(0,GAS.length-1)]*sgn()};}
+function genQ(t,used){
+  if(t==='meet'){return {type:'meet',m:MEET[used.meet++%MEET.length]};}
+  if(t==='table')return fixTable(genTable());
+  if(t==='find')return genFind();
+  if(t==='gdraw'||t==='gread')return genGraph(t);
+  if(t==='quest'){var p=used.qpool.shift();return {type:'quest',p:p,askOrder:shuffle([0,1,2]),pairs:shuffle([0,1]),wo:shuffle([p.w].concat(p.wo)),nums:shuffle([p.ans,p.kv,p.c].filter(function(v,i,arr){return arr.indexOf(v)===i;})),units:shuffle(p.units)};}
+}
+
+var screen='title', G=null;
+var PRAISE=['ナイス!','クリア!','いいね!','その調子!','完ぺき!'];
+function startStage(id){
+  var st=STAGES.filter(function(s){return s.id===id;})[0],qs=[],used={meet:0,qpool:shuffle(QUEST)};
+  var plan={meet:['meet','meet','meet'],shiki:shuffle(['table','table','find','find','find','find']),graph:['gdraw','gdraw','gdraw','gread','gread','gread'],quest:['quest','quest','quest','quest','quest'],boss:shuffle(['find','find','table','gread','gdraw','quest','quest','find'])}[id];
+  plan.forEach(function(t){qs.push(genQ(t,used));});
+  G={st:st,qs:qs,i:0,firstOK:0,hearts:id==='boss'?3:null,over:false,ms:{swap:0,sign:0,calc:0,word:0},t0:Date.now()};
+  resetQ(); screen='play'; render(); SFX.start();
+}
+function resetQ(){
+  var q=G.qs[G.i];
+  G.phase={meet:'try',table:'num',find:'form',gdraw:'pts',gread:'tap',quest:'s0'}[q.type];
+  G.input='';G.neg=false;G.boxes=[null,null];G.parenDone=false;G.sign=null;G.mark=null;G.pt=null;G.pts=[];
+  G.tried=[];G.rows={div:false,mul:false};G.qn=null;G.qu=null;
+  G.missed=false;G.done=false;G.fb=null;
+}
+function miss(kind,msg){
+  var q=G.qs[G.i];
+  if(kind!=='word')msg=(['check','gcheck','s4t'].indexOf(G.phase)>=0?'<span class="kwt k3">合言葉③ もとに戻して たしかめる</span>':'<span class="kwt">合言葉① 1行に1ステップ</span>')+'<br>'+msg;
+  else if(q.type==='quest')msg='<span class="kwt k2">合言葉② 答えの文まで</span><br>'+msg;
+  save.miss[kind]=(save.miss[kind]||0)+1; G.ms[kind]++; G.missed=true; G.fb={ok:false,msg:msg};
+  if(G.hearts!==null){G.hearts--; if(G.hearts<=0){G.over=true; persist(); logResult('ゲームオーバー'); screen='result'; render(); SFX.over(); return true;} SFX.wrong(); SFX.heart();}
+  else SFX.wrong();
+  persist(); return false;
+}
+function finish(msg){
+  G.done=true; G.phase='done';
+  if(!G.missed){G.firstOK++;save.coins+=2;}else{save.coins+=1;}
+  persist();
+  G.fb={ok:true,msg:PRAISE[rnd(0,PRAISE.length-1)]+(msg?' '+msg:'')};
+  render(); SFX.coin();
+}
+function step(msg){G.fb={ok:true,msg:msg};SFX.step();render();}
+
+/* ---------- pixel art ---------- */
+var ROBO=["....Y....","....K....",".KKKKKKK.",".KBBBBBK.",".KBWBWBK.",".KBBBBBK.",".KBKKKBK.",".KKKKKKK.","..KB.BK..","..KK.KK.."];
+var COL={Y:'#FFC928',K:'#1E1B3A',B:'#4FA3F7',W:'#FFFFFF'};
+function robo(px,ox,oy){var s='';for(var r=0;r<ROBO.length;r++)for(var c=0;c<ROBO[r].length;c++){var ch=ROBO[r][c];if(ch!=='.')s+='<rect x="'+(ox+c*px)+'" y="'+(oy+r*px)+'" width="'+px+'" height="'+px+'" fill="'+COL[ch]+'"/>';}return s;}
+function coinSVG(){return '<svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><rect x="6" y="2" width="10" height="18" fill="#1E1B3A"/><rect x="2" y="6" width="18" height="10" fill="#1E1B3A"/><rect x="4" y="4" width="14" height="14" fill="#1E1B3A"/><rect x="7" y="4" width="8" height="14" fill="#FFC928"/><rect x="4" y="7" width="14" height="8" fill="#FFC928"/><rect x="10" y="7" width="2" height="8" fill="#E39A00"/></svg>';}
+function heartSVG(on){var f=on?'#E5484D':'none';return '<svg width="24" height="22" viewBox="0 0 12 11" aria-hidden="true"><path d="M1 1h4v1h2V1h4v1h1v4h-1v1h-1v1H9v1H8v1H7v1H5V10H4V9H3V8H2V7H1V6H0V2h1z" fill="'+f+'" stroke="currentColor" stroke-width="1"/></svg>';}
+
+/* ---------- meet pictures ---------- */
+function tilesS(ox,oy,w,h,u){var s='';for(var r=0;r<h;r++)for(var c=0;c<w;c++)s+='<rect x="'+(ox+c*u)+'" y="'+(oy+r*u)+'" width="'+u+'" height="'+u+'" fill="#FFC928" stroke="#1E1B3A" stroke-width="1"/>';return s;}
+function meetPic(m,x){
+  var y=m.c/x,s='';
+  if(m.v==='candy'){var gw=260/x;for(var g=0;g<x;g++){var cols=y>6?3:(y>3?2:1),rows=Math.ceil(y/cols),u=Math.min(12,70/rows);
+      for(var k=0;k<y;k++){var c=k%cols,r=Math.floor(k/cols);s+='<circle cx="'+(10+gw*g+gw/2+(c-(cols-1)/2)*u)+'" cy="'+(10+r*u+u/2)+'" r="'+(u*0.38)+'" fill="#E5484D"/>';}
+      if(g>0)s+='<line x1="'+(10+gw*g)+'" y1="6" x2="'+(10+gw*g)+'" y2="84" stroke="var(--grid)" stroke-width="2"/>';}}
+  else if(m.v==='rect'){var u=Math.min(13,250/x,76/y);s+=tilesS(140-x*u/2,8+(76-y*u)/2,x,y,u);}
+  else{var W=260,sw=W/x;for(var i=0;i<x;i++)s+='<rect x="'+(10+i*sw)+'" y="34" width="'+sw+'" height="20" fill="'+(i%2?'#FFD9A8':'#E9822E')+'" stroke="#1E1B3A" stroke-width="1"/>';s+='<text x="140" y="24" text-anchor="middle" class="vt">120cm</text>';}
+  return '<svg class="mpic" viewBox="0 0 280 100" aria-hidden="true">'+s+'<text x="140" y="97" text-anchor="middle" class="vt">x = '+x+' → y = '+y+'</text></svg>';
+}
+
+/* ---------- grid ---------- */
+function px(x,y){return [C+x*U,C-y*U];}
+function gridSVG(o){
+  var s='',lo=C-GR*U-10,hi=C+GR*U+10;
+  for(var v=-GR;v<=GR;v++){if(v===0)continue;var p=C+v*U;
+    s+='<line class="gl" x1="'+p+'" y1="'+lo+'" x2="'+p+'" y2="'+hi+'"/><line class="gl" x1="'+lo+'" y1="'+p+'" x2="'+hi+'" y2="'+p+'"/>';
+    s+='<text class="tk" x="'+p+'" y="'+(C+13)+'" text-anchor="middle">'+M(v)+'</text><text class="tk" x="'+(C-5)+'" y="'+(C-v*U+4)+'" text-anchor="end">'+M(v)+'</text>';}
+  s+='<line class="ax" x1="10" y1="'+C+'" x2="290" y2="'+C+'"/><line class="ax" x1="'+C+'" y1="290" x2="'+C+'" y2="10"/>';
+  s+='<polygon points="290,'+C+' 282,'+(C-5)+' 282,'+(C+5)+'" fill="var(--axis)"/><polygon points="'+C+',10 '+(C-5)+',18 '+(C+5)+',18" fill="var(--axis)"/>';
+  s+='<text x="282" y="'+(C-8)+'">x</text><text x="'+(C+8)+'" y="20">y</text><text x="'+(C-14)+'" y="'+(C+14)+'">O</text>';
+  if(o.curve){var a=o.curve;[1,-1].forEach(function(sg){var d='';for(var t=0.12;t<=7.2;t+=0.04){var x=sg*t,y=a/x;if(Math.abs(y)>7.5)continue;var p=px(x,y);d+=(d?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1);}
+      s+='<g clip-path="url(#clip)"><path d="'+d+'" fill="none" class="pl"/></g>';});}
+  (o.dots||[]).forEach(function(d){var p=px(d.x,d.y);s+='<rect x="'+(p[0]-6)+'" y="'+(p[1]-6)+'" width="12" height="12" fill="'+(d.fill||'#FFC928')+'" stroke="#1E1B3A" stroke-width="2"/>';});
+  if(o.mark){var m=px(o.mark.x,o.mark.y);s+='<rect x="'+(m[0]-9)+'" y="'+(m[1]-9)+'" width="18" height="18" fill="none" stroke="var(--blue)" stroke-width="3" stroke-dasharray="4 3"/><rect x="'+(m[0]-3)+'" y="'+(m[1]-3)+'" width="6" height="6" fill="var(--blue)"/>';}
+  (o.labels||[]).forEach(function(d){var p=px(d.x,d.y),lx=p[0]>200?p[0]-10:p[0]+10,anc=p[0]>200?'end':'start',ly=p[1]<40?p[1]+22:p[1]-10;s+='<text class="lb" x="'+lx+'" y="'+ly+'" text-anchor="'+anc+'">('+M(d.x)+', '+M(d.y)+')</text>';});
+  return '<svg class="graph'+(o.tap?' tapgrid':'')+'" viewBox="0 0 300 300" role="img" aria-label="'+(o.tap?'方眼。タップして点を置く':'座標の方眼')+'"><defs><clipPath id="clip"><rect x="20" y="20" width="260" height="260"/></clipPath></defs>'+s+'</svg>';
+}
+
+/* ---------- views ---------- */
+function starStr(n){var s='';for(var i=0;i<3;i++)s+=i<n?'★':'<span class="off">★</span>';return s;}
+var KWBAR='<div class="kwbar"><div class="kw k1"><i>①</i><div><b>1行に1ステップ</b><span>途中式は1行に1つ。= は1行に1つ。マイナスは ( )</span></div></div><div class="kw k2"><i>②</i><div><b>答えの文まで</b><span>文章題は「答え ○○は△△」まで書いてクリア</span></div></div><div class="kw k3"><i>③</i><div><b>もとに戻して たしかめる</b><span>答えを問題に戻して、合うか見る</span></div></div></div>';
+function viewTitle(){
+  var h='<section class="panel"><div class="hero"><svg class="bob" width="70" height="78" viewBox="0 0 70 78" aria-hidden="true">'+robo(7.5,1.25,2)+'</svg><div><h1>比例ラボ</h1><p>第3週 反比例と文章題</p></div></div>'
+   +(LOG_URL?'<p class="cap" style="text-align:left">クリアの記録は お父さんにも届くよ</p>':'')
+   +'<div class="titlebar"><p class="coins" style="margin:0">'+coinSVG()+'<span>コイン '+save.coins+'</span></p>'+soundBtn()+'</div></section>';
+  h+='<section class="panel"><h2>ステージをえらぶ</h2>';
+  STAGES.forEach(function(s){h+='<button class="btn stagebtn" data-act="start" data-id="'+s.id+'"><span><span class="nm">'+s.name+'</span><span class="ds">'+s.desc+'</span></span><span class="stars" aria-label="星'+(save.stars[s.id]||0)+'つ">'+starStr(save.stars[s.id]||0)+'</span></button>';});
+  h+='</section>';
+  h+='<section class="panel"><h2>合言葉と 反比例のルール</h2>'+KWBAR+'<ol class="rules">'
+    +'<li><b>1</b><span>反比例は <b style="all:unset;font-weight:700">x × y がいつも同じ</b>。式は y = a/x</span></li>'
+    +'<li><b>2</b><span>a を求めるときは <b style="all:unset;font-weight:700">a = x × y</b>(比例の y ÷ x とちがう!)</span></li>'
+    +'<li><b>3</b><span>グラフは原点を通らない、なめらかな2本の曲線</span></li></ol></section>';
+  h+='<section class="panel"><h2>ミスのきろく</h2><div class="record">'
+    +'<div><b>'+save.miss.swap+'</b><span>式の形・<br>入れかわり</span></div>'
+    +'<div><b>'+save.miss.sign+'</b><span>符号</span></div>'
+    +'<div><b>'+save.miss.calc+'</b><span>計算</span></div>'
+    +'<div><b>'+(save.miss.word||0)+'</b><span>文章題</span></div></div>'
+    +'<p class="cap" style="margin-top:10px">ミスは数えるだけ。へらすのが目標!</p></section>';
+  return h;
+}
+function topBar(){
+  var h='<div class="top"><button class="btn plain" data-act="back">もどる</button><span class="prog">'+G.st.name+' '+(G.i+1)+'/'+G.st.n+'</span>';
+  if(G.hearts!==null){h+='<span class="hearts" aria-label="ハート'+G.hearts+'つ">';for(var i=0;i<3;i++)h+=heartSVG(i<G.hearts);h+='</span>';}
+  else h+='<span class="coins">'+coinSVG()+save.coins+'</span>';
+  return h+soundBtn(true)+'</div>';
+}
+function stepsBar(list,cur){var h='<div class="steps">';list.forEach(function(n,i){h+='<span class="'+(i<cur?'okd':(i===cur?'cur':''))+'">'+n+'</span>';});return h+'</div>';}
+function inputView(){return (G.neg?'−':'')+(G.input||'&nbsp;');}
+
+function viewMeet(q){
+  var m=q.m,h='<p class="ask">反比例ってなに?</p><p class="wtext">'+m.t+'</p>';
+  var last=G.tried.length?G.tried[G.tried.length-1]:null;
+  if(last)h+='<div class="mcardb">'+meetPic(m,last)+'</div>';
+  else h+='<p class="cap">下のボタンで x を決めると、絵と表ができるよ</p>';
+  if(G.tried.length){
+    var xs=G.tried.slice().sort(function(a,b){return a-b;});
+    h+='<div class="tblbox"><table class="tbl"><tr><th>x</th>';xs.forEach(function(x){h+='<td>'+x+'</td>';});
+    h+='</tr><tr><th>y</th>';xs.forEach(function(x){h+='<td>'+(m.c/x)+'</td>';});h+='</tr>';
+    if(G.rows.mul){h+='<tr><th class="sm">x×y</th>';xs.forEach(function(x){h+='<td class="calc">'+m.c+'</td>';});h+='</tr>';}
+    if(G.rows.div){h+='<tr><th class="sm">y÷x</th>';xs.forEach(function(x){var g=gcd(m.c,x*x);h+='<td class="calc">'+frac(m.c/g,x*x/g)+'</td>';});h+='</tr>';}
+    h+='</table></div>';
+  }
+  if(G.phase==='form'||G.done){
+    h+='<div class="note"><div class="nl">x × y がいつも '+m.c+'</div><div class="nl muted">x が2倍、3倍…になると、y は '+fracH(1,2)+'、'+fracH(1,3)+'…</div>';
+    if(G.done)h+='<div class="nl fin">'+invEq(m.c)+'</div><div class="nl muted">こういう関係を <b style="all:unset;font-weight:700">反比例</b> という</div>';
+    h+='</div>';
+  }
+  return h;
+}
+function meetControls(q){
+  var m=q.m,h='';
+  if(G.phase==='try'||G.phase==='find'){
+    h+='<div class="choices four">';m.xs.forEach(function(x){h+='<button class="btn" data-act="mx" data-v="'+x+'">x='+x+'</button>';});h+='</div>';
+    if(G.phase==='try')return h+'<p class="cap">x をいろいろ変えてみよう(4つ以上) いま '+G.tried.length+'/4</p>';
+    var any=G.rows.div||G.rows.mul;
+    return h+'<p class="ask" style="font-size:18px;margin-top:12px">表の中で、<b>いつも同じ</b>になるものは?</p><div class="choices two"><button class="btn small'+(G.rows.mul?' on':'')+'" data-act="trow" data-v="mul">x × y を<br>計算してみる</button><button class="btn small'+(G.rows.div?' on':'')+'" data-act="trow" data-v="div">y ÷ x を<br>計算してみる</button></div>'
+      +'<div class="choices" style="margin-top:10px"><button class="btn small" data-act="wc" data-v="mul"'+(any?'':' disabled')+'>x × y がいつも同じ</button><button class="btn small" data-act="wc" data-v="div"'+(any?'':' disabled')+'>y ÷ x がいつも同じ</button></div>';
+  }
+  var opts=shuffle([['prop','y = '+m.c+'x'],['inv',invEq(m.c)],['add','y = x + '+m.c]]);
+  if(!G.qn)G.qn=opts;
+  h='<p class="ask" style="font-size:18px">x × y = '+m.c+' だから、y を x の式で表すと?</p><div class="choices">';
+  G.qn.forEach(function(o){h+='<button class="btn" data-act="wc" data-v="'+o[0]+'">'+o[1]+'</button>';});
+  return h+'</div>';
+}
+function onMeetX(x){
+  if(G.done||(G.phase!=='try'&&G.phase!=='find'))return;
+  if(G.tried.indexOf(x)<0)G.tried.push(x);else{G.tried.splice(G.tried.indexOf(x),1);G.tried.push(x);}
+  SFX.place();G.fb=null;
+  if(G.phase==='try'&&G.tried.length>=4){G.phase='find';G.fb={ok:true,msg:'表ができてきた! x が増えると y は? そして、<b>いつも同じ</b>になるものは?'};}
+  render();
+}
+function onMeetChoice(v){
+  var q=G.qs[G.i];
+  if(G.phase==='find'){
+    if(v==='mul'){G.phase='form';G.rows.mul=true;G.rows.div=true;step('そう! <b>x × y がいつも '+q.m.c+'</b>。比例(y ÷ x が同じ)とはちがう関係だね。');return;}
+    if(miss('word','計算した行を見比べよう。<b>全部同じ数</b>になっているのはどっち?'))return;G.rows.mul=true;G.rows.div=true;render();return;
+  }
+  if(G.phase==='form'){
+    if(v==='inv'){finish('これが <b>反比例</b>。y = a/x の a を<b>比例定数</b>という。');return;}
+    if(miss('swap',v==='prop'?'y = '+q.m.c+'x は比例の式。x × y = '+q.m.c+' なら、y = '+q.m.c+' ÷ x。':'たし算の式ではないよ。x × y = '+q.m.c+' から y を求めると?'))return;render();
+  }
+}
+
+function viewTable(q){
+  var h='<div class="eq">'+invEq(q.a)+'</div><p class="ask">x = '+M(q.ask)+' のとき y は?</p><div class="line2" style="font-size:20px">y = '+M(q.a)+' ÷ '+P(q.ask)+'</div><div class="tblbox"><table class="tbl"><tr><th>x</th>';
+  q.xs.forEach(function(x){h+='<td>'+M(x)+'</td>';});
+  h+='</tr><tr><th>y</th>';
+  q.xs.forEach(function(x){if(x===q.ask)h+='<td class="q">'+(G.done?M(q.y):(G.input?inputView():(G.neg?'−':'')+'?'))+'</td>';else h+='<td>'+M(q.a/x)+'</td>';});
+  return h+'</tr></table></div>';
+}
+function viewFind(q){
+  var order=['form','place','paren','sign','num','check','done'],at=order.indexOf(G.phase);
+  var list=['形','代入','かっこ','符号','計算','たしかめ'];if(q.x>0)list.splice(2,1);
+  var cur=at;if(q.x>0&&at>=2)cur=at-1;
+  var h=stepsBar(list,G.done?9:cur)+'<p class="ask">y は x に反比例し、x = '+M(q.x)+' のとき y = '+M(q.y)+'</p><div class="note">';
+  h+=at===0?'<div class="nl muted">まず 式の形 を書こう</div>':'<div class="nl">'+'y = '+fracH('a','x')+'</div>';
+  if(at===1)h+='<div class="nl"><div class="tpl"><button class="box'+(G.boxes[0]?' fill':'')+'" data-act="box" data-i="0" aria-label="左の□">'+(G.boxes[0]?M(G.boxes[0]==='x'?q.x:q.y):'')+'</button><span>= a ÷</span><button class="box'+(G.boxes[1]?' fill':'')+'" data-act="box" data-i="1" aria-label="右の□">'+(G.boxes[1]?M(G.boxes[1]==='x'?q.x:q.y):'')+'</button></div></div>';
+  else if(at>=2)h+='<div class="nl">'+M(q.y)+' = '+fracH('a',G.phase==='paren'?'<mark>'+M(q.x)+'</mark>':P(q.x))+'</div>';
+  if(at>=3)h+='<div class="nl">a = '+M(q.y)+' × '+P(q.x)+'</div>';
+  if(at===4)h+='<div class="nl">a = <span class="ans">'+(G.sign<0?'−':'')+(G.input||'&nbsp;')+'</span></div>';
+  if(at>=5){h+='<div class="nl">a = '+M(q.a)+'</div><div class="nl"><span style="font-size:15px">たしかめ</span> '+P(q.a)+' ÷ '+P(q.x)+' = '+(G.phase==='check'?'<span class="ans">'+inputView()+'</span>':M(q.y)+' <span class="tag">OK</span>')+'</div>';}
+  if(G.done)h+='<div class="nl fin">'+invEq(q.a)+'</div>';
+  return h+'</div>';
+}
+function viewGraph(q){
+  var o={},h='';
+  if(q.type==='gdraw'){
+    var pos=G.pts.filter(function(p){return p.x>0;}).length,neg=G.pts.length-pos;
+    o.dots=G.pts;o.tap=G.phase==='pts';o.mark=G.phase==='pts'?G.mark:null;if(G.phase!=='pts')o.curve=q.a;
+    h+=stepsBar(['点を4つ','名前','原点'],G.phase==='pts'?0:G.phase==='f1'?1:G.phase==='f2'?2:3)+'<div class="eq">'+invEq(q.a)+'</div><p class="ask" style="margin-top:0">のグラフの点を打とう</p>'+gridSVG(o);
+    if(G.phase==='pts')h+='<div class="mstat"><span class="'+(pos>=2?'okd':'')+'">x がプラスの点 '+Math.min(pos,2)+'/2</span><span class="'+(neg>=2?'okd':'')+'">x がマイナスの点 '+Math.min(neg,2)+'/2</span></div>';
+    if(G.done)h+='<div class="note"><div class="nl">反比例のグラフ = 双曲線</div><div class="nl muted">原点を通らない、なめらかな2本の曲線。x 軸・y 軸に近づくけど交わらない</div></div>';
+    return h;
+  }
+  o.curve=q.a;o.tap=G.phase==='tap';o.mark=G.phase==='tap'?G.mark:null;if(G.pt){o.dots=[G.pt];o.labels=[G.pt];}
+  h+=stepsBar(['点をさがす','符号','計算','たしかめ'],G.phase==='tap'?0:G.phase==='sign'?1:G.phase==='num'?2:G.phase==='gcheck'?3:4)+'<p class="ask">この反比例のグラフの式は?</p>'+gridSVG(o)+'<div class="note"><div class="nl">y = '+fracH('a','x')+'(x × y = a)</div>';
+  if(G.pt)h+='<div class="nl">点 ('+M(G.pt.x)+', '+M(G.pt.y)+') を通る</div><div class="nl">a = '+P(G.pt.x)+' × '+P(G.pt.y)+'</div>';
+  else h+='<div class="nl muted">曲線がマス目の交点をぴったり通る点をさがそう</div>';
+  if(G.phase==='num')h+='<div class="nl">a = <span class="ans">'+(G.sign<0?'−':'')+(G.input||'&nbsp;')+'</span></div>';
+  if(G.phase==='gcheck'||G.done)h+='<div class="nl">a = '+M(q.a)+'</div><div class="nl"><span style="font-size:15px">たしかめ</span> '+P(q.a)+' ÷ '+P(G.pt.x)+' = '+(G.done?M(G.pt.y)+' <span class="tag">OK</span>':'<span class="ans">'+inputView()+'</span>')+'</div>';
+  if(G.done)h+='<div class="nl fin">'+invEq(q.a)+'</div>';
+  return h+'</div>';
+}
+
+/* ---------- 文章題のイメージ(アニメーション) ---------- */
+function sTxt(x,y,t,c,sz,anc){return '<text x="'+x+'" y="'+y+'" text-anchor="'+(anc||'middle')+'" class="st" style="fill:'+(c||'var(--text)')+';font-size:'+(sz||12)+'px">'+t+'</text>';}
+function gearPath(cx,cy,r,n){var d='';for(var i=0;i<n*2;i++){var a=Math.PI*i/n,rr=i%2?r:r+5;d+=(i?'L':'M')+(cx+rr*Math.cos(a)).toFixed(1)+' '+(cy+rr*Math.sin(a)).toFixed(1);}return d+'Z';}
+var SCENE={
+ wire:function(){var s='',x0=24,sg=58;for(var i=0;i<4;i++){var d=(i*0.8)+'s';s+='<g class="ap" style="animation-delay:'+d+'"><rect x="'+(x0+i*sg)+'" y="78" width="'+(sg-3)+'" height="9" rx="4" fill="'+(i%2?'#B9B9C3':'#8C8C96')+'" stroke="#1E1B3A"/>'+sTxt(x0+i*sg+sg/2,70,'30g','#B4541A',12)+sTxt(x0+i*sg+sg/2,104,'2m','var(--text)',12)+'</g>';}
+   s+='<g class="ap2">'+sTxt(140,38,'ぜんぶで 120g','#B4541A',14)+sTxt(140,132,'ぜんぶで ? m','#2F6FD6',15)+'</g>';
+   s+='<g transform="translate(262,64)"><rect x="0" y="22" width="30" height="8" fill="#E5F4E8" stroke="#1E1B3A"/><rect x="12" y="8" width="6" height="14" fill="#9AA6B8"/><rect x="2" y="2" width="26" height="6" fill="#FFC928" stroke="#1E1B3A"/></g>';return s;},
+ gear:function(){return '<g class="spin" style="animation-duration:6s"><path d="'+gearPath(95,82,46,24)+'" fill="#FFC928" stroke="#1E1B3A" stroke-width="1.5"/><circle cx="95" cy="82" r="8" fill="#1E1B3A"/><line x1="95" y1="82" x2="95" y2="44" stroke="#1E1B3A" stroke-width="3"/></g>'
+   +'<g class="spin rev" style="animation-duration:10s"><path d="'+gearPath(201,82,54,40)+'" fill="#9FC3EE" stroke="#1E1B3A" stroke-width="1.5"/><circle cx="201" cy="82" r="8" fill="#1E1B3A"/><line x1="201" y1="82" x2="201" y2="36" stroke="#1E1B3A" stroke-width="3"/></g>'
+   +sTxt(8,162,'A 歯24・1分に10回転','var(--text)',11,'start')+sTxt(292,162,'B 歯40・1分に ? 回転','#2F6FD6',11,'end')+sTxt(150,18,'かみ合う歯の数は同じ → 歯の数×回転数 は同じ','#B4541A',11);},
+ oven:function(){return '<rect x="20" y="30" width="110" height="80" rx="8" fill="var(--chip)" stroke="#1E1B3A" stroke-width="2"/><rect x="30" y="40" width="70" height="60" rx="4" fill="#FFE9A8" class="glow"/><circle cx="115" cy="55" r="6" fill="#E5484D"/><circle cx="115" cy="80" r="6" fill="#9AA6B8"/>'
+   +sTxt(205,40,'500W','var(--text)',13)+'<rect x="150" y="48" width="100" height="14" fill="#FFC928" stroke="#1E1B3A"/>'+sTxt(292,59,'60秒','var(--text)',12,'end')
+   +sTxt(205,92,'600W(強い)','#2F6FD6',13)+'<rect x="150" y="100" width="100" height="14" fill="#9FC3EE" stroke="#1E1B3A" class="shrink"/>'+sTxt(292,111,'? 秒','#2F6FD6',12,'end')
+   +sTxt(150,148,'出力が強いほど、時間は短くなる','#B4541A',12);},
+ tank:function(){/* 3D isometric tank */var s='',L=70,T=40,W=120,D=40,H=90;
+   s+='<polygon points="'+L+','+(T+D/2)+' '+(L+W)+','+(T+D/2)+' '+(L+W+D)+','+T+' '+(L+D)+','+T+'" fill="#EEF5FB" stroke="#1E1B3A"/>';
+   s+='<g class="rise"><rect x="'+L+'" y="'+(T+D/2)+'" width="'+W+'" height="'+H+'" fill="#4FA3F7" opacity=".75"/><polygon points="'+(L+W)+','+(T+D/2)+' '+(L+W+D)+','+T+' '+(L+W+D)+','+(T+H)+' '+(L+W)+','+(T+D/2+H)+'" fill="#2F6FD6" opacity=".75"/></g>';
+   s+='<rect x="'+L+'" y="'+(T+D/2)+'" width="'+W+'" height="'+H+'" fill="none" stroke="#1E1B3A" stroke-width="2"/><polygon points="'+(L+W)+','+(T+D/2)+' '+(L+W+D)+','+T+' '+(L+W+D)+','+(T+H)+' '+(L+W)+','+(T+D/2+H)+'" fill="none" stroke="#1E1B3A" stroke-width="2"/>';
+   s+='<path d="M'+(L+20)+' 10 V'+(T+D/2+4)+'" stroke="#4FA3F7" stroke-width="5" class="flow"/>'+sTxt(L+40,16,'毎分 4L','#2F6FD6',13,'start');
+   s+='<line x1="'+(L-8)+'" y1="'+(T+D/2+18)+'" x2="'+(L+W+D+8)+'" y2="'+(T+D/2+18)+'" stroke="#B4541A" stroke-dasharray="5 3" stroke-width="2"/>'+sTxt(L+W+D+12,T+D/2+22,'36L','#B4541A',13,'start')+sTxt(150,165,'36L になるのは 何分後?','#2F6FD6',13);return s;},
+ rope:function(){var s='<rect x="20" y="60" width="260" height="14" rx="7" fill="#E9822E" stroke="#1E1B3A"/>'+sTxt(150,50,'120cm','var(--text)',13);
+   for(var i=1;i<15;i++){s+='<line class="ap" style="animation-delay:'+(i*0.18)+'s" x1="'+(20+i*260/15)+'" y1="56" x2="'+(20+i*260/15)+'" y2="78" stroke="#1E1B3A" stroke-width="2"/>';}
+   s+=sTxt(150,104,'1本を 8cm ずつに切ると…','#B4541A',13)+sTxt(150,130,'何本になる?','#2F6FD6',15);return s;},
+ bike:function(){var s='<line x1="20" y1="110" x2="285" y2="110" stroke="#1E1B3A" stroke-width="3"/>';
+   [0,15,30,45,60].forEach(function(k,i){var x=30+i*62;s+='<line x1="'+x+'" y1="104" x2="'+x+'" y2="116" stroke="#1E1B3A" stroke-width="2"/>'+sTxt(x,132,k+'km',i===4?'#2F6FD6':'var(--text)',11);});
+   s+='<g class="ride"><circle cx="30" cy="96" r="9" fill="none" stroke="#1E1B3A" stroke-width="2.5"/><circle cx="54" cy="96" r="9" fill="none" stroke="#1E1B3A" stroke-width="2.5"/><path d="M30 96 L40 82 L54 96 M40 82 L36 74 M40 82 L50 80" stroke="#E5484D" stroke-width="3" fill="none"/><circle cx="36" cy="66" r="5" fill="#FFC928" stroke="#1E1B3A"/></g>';
+   s+=sTxt(150,30,'1時間で 15km 進む','#B4541A',13)+sTxt(150,154,'60km まで 何時間?','#2F6FD6',14);return s;},
+ rect:function(){var s='',u=8;[[4,9],[6,6],[9,4]].forEach(function(d,i){var w=d[1]*u*1.4,h=d[0]*u*1.4,x=150-w/2,y=88-h/2;s+='<g class="cyc" style="animation-delay:'+(i*2)+'s">';for(var r=0;r<d[0];r++)for(var c=0;c<d[1];c++)s+='<rect x="'+(x+c*u*1.4)+'" y="'+(y+r*u*1.4)+'" width="'+(u*1.4)+'" height="'+(u*1.4)+'" fill="#FFC928" stroke="#1E1B3A" stroke-width=".8"/>';s+=sTxt(150,y+h+16,'横 '+d[1]+'cm × 縦 '+d[0]+'cm','var(--text)',12)+'</g>';});
+   return s+sTxt(150,18,'面積は いつも 36cm²','#B4541A',13)+sTxt(150,160,'横 9cm のとき、縦は?','#2F6FD6',14);}
+};
+function sceneSVG(v){return '<svg class="scene" viewBox="0 0 300 170" aria-hidden="true">'+SCENE[v]()+'</svg>';}
+
+var QSTEPS=['イメージ','線','ことばの式','表','式→解く','たしかめ','答えの文'];
+function qcheck(p){if(p.k==='prop')return {expr:p.c+' × '+p.ans,val:p.c*p.ans,lead:'x = '+p.ans+' を戻すと y =',goal:'問題の '+p.kv};if(p.known==='x')return {expr:p.kv+' × '+p.ans,val:p.c,lead:'x × y =',goal:'いつも同じ数 '+p.c};return {expr:p.c+' ÷ '+p.ans,val:p.kv,lead:'x = '+p.ans+' を戻すと y =',goal:'問題の '+p.kv};}
+function viewQuest(q){
+  if(G.phase==='s0')return stepsBar(QSTEPS,0)+'<div class="scenebox">'+sceneSVG(q.p.v)+'</div><p class="wtext qtext">'+q.p.t+'</p><p class="ask" style="font-size:17px">まず絵を見て。この問題で<b>聞かれているのは</b>何?</p>';
+  var p=q.p,k=['s1','s2','s3','s3k','s4f','s4c','s4s','s4t','s5','done'].indexOf(G.phase),cur=k<=1?k:k<=3?2:k<=6?3:k===7?4:k===8?5:6;
+  var h=stepsBar(QSTEPS,cur+1).replace('>答えの文<','>答えの文 ▶ クリア<')+(G.phase==='s1'?'<div class="scenebox small">'+sceneSVG(p.v)+'</div>':'')+'<p class="wtext qtext">'+p.t+'</p><div class="note">';
+  if(k>=1)h+='<div class="nl" style="font-size:17px">x:'+p.xw+' / y:'+p.yw+'</div>';
+  if(k>=2)h+='<div class="nl" style="font-size:17px">'+p.w+'</div>';
+  if(k>=2){h+='<div class="nl"><table class="tbl" style="font-size:16px"><tr><th>x</th><td>'+p.x0+'</td><td>'+p.tx+'</td></tr><tr><th>y</th><td>'+p.y0+'</td><td class="'+(k===2?'q':'')+'">'+(k===2?(G.input||'?'):tqy(p))+'</td></tr></table></div>';}
+  if(k>=4)h+='<div class="nl">'+(p.k==='prop'?'比例':'反比例')+'</div>';
+  if(k>=6)h+='<div class="nl">'+(p.k==='prop'?'y = '+p.c+'x':invEq(p.c))+'</div>';
+  if(k===5)h+='<div class="nl">'+(p.k==='prop'?'y = <span class="ans">'+(G.input||'&nbsp;')+'</span>x':'y = '+fracH('<span class="ans" style="min-width:40px">'+(G.input||'&nbsp;')+'</span>','x'))+'</div>';
+  if(k>=6){p.lines.forEach(function(l){h+='<div class="nl">'+l+'</div>';});h+='<div class="nl">'+(p.known==='y'?'x':'y')+' = '+(k===6?'<span class="ans">'+(G.input||'&nbsp;')+'</span>':p.ans)+'</div>';}
+  if(k>=7){var qc=qcheck(p);h+='<div class="nl"><span style="font-size:15px">たしかめ</span> '+qc.lead+' '+qc.expr+' = '+(k===7?'<span class="ans">'+(G.input||'&nbsp;')+'</span>':qc.val+' <span class="tag">OK</span>')+'</div>';}
+  if(k>=8)h+='<div class="nl ansline">答え:'+p.pre+' '+(G.done?'<b>'+p.ans+p.unit+'</b>':'<span class="slot2">'+(G.qn!==null?G.qn:'?')+'</span><span class="slot2">'+(G.qu||'?')+'</span>')+'</div>';
+  if(G.done)h+='<div class="nl muted">ここまで書いて クリア!</div>';
+  return h+'</div>';
+}
+function tqy(p){return p.k==='prop'?p.c*p.tx:p.c/p.tx;}
+function questControls(q){
+  var p=q.p,h;
+  if(G.phase==='s0'){var hh='<div class="choices">';q.askOrder.forEach(function(i){hh+='<button class="btn small" data-act="wc" data-v="ask'+i+'">'+p.ask[i]+'</button>';});return hh+'</div><p class="cap">「?」がついているところが、聞かれていること</p>';}
+  if(G.phase==='s1'){var o=[['ok','x:'+p.xw+'<br>y:'+p.yw],['sw','x:'+p.yw+'<br>y:'+p.xw]];h='<p class="ask" style="font-size:17px">① x と y は それぞれ何?</p><div class="choices">';q.pairs.forEach(function(i){h+='<button class="btn small" data-act="wc" data-v="'+o[i][0]+'">'+o[i][1]+'</button>';});return h+'</div><p class="cap">問題文の「x」「y」の前の言葉に注目</p>';}
+  if(G.phase==='s2'){h='<p class="ask" style="font-size:17px">② ことばの式は?</p><div class="choices">';q.wo.forEach(function(w,i){h+='<button class="btn small" data-act="wc" data-v="'+i+'">'+w+'</button>';});return h+'</div>';}
+  if(G.phase==='s3')return '<p class="ask" style="font-size:17px">③ x = '+p.tx+' のとき y は?(ことばの式で計算)</p>'+keypad3('OK');
+  if(G.phase==='s3k')return '<p class="ask" style="font-size:17px">③ x が '+fmtRatio(p.tx/p.x0)+'倍になると y は '+fmtRatio(tqy(p)/p.y0)+'倍。だから…</p><div class="choices"><button class="btn small" data-act="wc" data-v="prop">比例</button><button class="btn small" data-act="wc" data-v="inv">反比例</button><button class="btn small" data-act="wc" data-v="none">どちらでもない</button></div>';
+  if(G.phase==='s4f')return '<p class="ask" style="font-size:17px">④ 式の形は?</p><div class="choices two"><button class="btn" data-act="wc" data-v="prop">y = ax</button><button class="btn" data-act="wc" data-v="inv">y = '+fracH('a','x')+'</button></div>';
+  if(G.phase==='s4c')return '<p class="ask" style="font-size:17px">④ a はいくつ?(表の x と y から)</p>'+keypad3('OK');
+  if(G.phase==='s4s')return '<p class="ask" style="font-size:17px">④ '+(p.known==='y'?'y = '+p.kv:'x = '+p.kv)+' を入れて、1行1ステップで解こう</p>'+keypad3('OK');
+  if(G.phase==='s4t'){var qc=qcheck(p);return '<p class="ask" style="font-size:17px">⑤ もとに戻して たしかめよう(合言葉③)<br><span style="font-size:14px">'+qc.lead+' '+qc.expr+' は? '+qc.goal+' になる?</span></p>'+keypad3('OK');}
+  var h2='<p class="ask" style="font-size:17px">⑥ 答えの文を完成させよう</p><p class="cap">数</p><div class="choices three">';
+  q.nums.forEach(function(n){h2+='<button class="btn'+(G.qn===n?' on':'')+'" data-act="qn" data-v="'+n+'">'+n+'</button>';});
+  h2+='</div><p class="cap">単位</p><div class="choices three">';q.units.forEach(function(u){h2+='<button class="btn'+(G.qu===u?' on':'')+'" data-act="qu" data-v="'+u+'">'+u+'</button>';});
+  return h2+'</div><button class="btn blue wide" data-act="qdone" style="margin-top:12px"'+(G.qn!==null&&G.qu?'':' disabled')+'>答えの文 できた!</button>';
+}
+function fmtRatio(r){if(r>=1)return String(Math.round(r*100)/100);var d=Math.round(1/r);return Math.abs(1/d-r)<1e-9?fracH(1,d):String(r);}
+function keypad3(lab,neg){
+  var keys=['7','8','9','4','5','6','1','2','3',neg?'−':'','0','⌫'],h='<div class="keypad">';
+  keys.forEach(function(k){if(!k){h+='<span></span>';return;}var on=(k==='−'&&G.neg)?' on':'';h+='<button class="btn'+on+'" data-act="key" data-v="'+k+'"'+(k==='⌫'?' aria-label="1文字けす"':'')+(k==='−'?' aria-label="マイナス切りかえ" aria-pressed="'+G.neg+'"':'')+'>'+k+'</button>';});
+  return h+'<button class="btn ok" data-act="ok">'+lab+'</button></div>';
+}
+function controls(q){
+  if(G.done)return '<button class="btn blue wide" data-act="next">'+(G.i+1>=G.st.n?'結果を見る':'次へ')+'</button>';
+  if(q.type==='meet')return meetControls(q);
+  if(q.type==='quest')return questControls(q);
+  if(q.type==='table')return keypad3('OK',true);
+  if(q.type==='find'){
+    if(G.phase==='form'){if(!G.qn)G.qn=shuffle([['ax','y = ax'],['adx','y = '+fracH('a','x')],['xa','y = '+fracH('x','a')]]);var h='<p class="ask" style="font-size:18px">反比例の式の形はどれ?</p><div class="choices">';G.qn.forEach(function(o){h+='<button class="btn" data-act="wc" data-v="'+o[0]+'">'+o[1]+'</button>';});return h+'</div>';}
+    if(G.phase==='place'){var ks=q.flip?['x','y']:['y','x'],h2='<div class="chips">';ks.forEach(function(k){var used=G.boxes.indexOf(k)>=0;h2+='<button class="btn" data-act="chip" data-k="'+k+'"'+(used?' disabled':'')+'>'+M(k==='x'?q.x:q.y)+'</button>';});return h2+'</div><p class="cap">数字をタップすると□に入るよ</p>';}
+    if(G.phase==='paren')return '<p class="ask" style="font-size:18px">マイナスの数が入ったね。どう書く?</p><div class="signs"><button class="btn" data-act="paren" data-v="wrap">( ) をつける</button><button class="btn plain" data-act="paren" data-v="skip">このままでOK</button></div>';
+    if(G.phase==='sign')return '<p class="ask" style="font-size:18px">a はプラス? マイナス?</p><div class="signs"><button class="btn" data-act="sign" data-v="1">+ プラス</button><button class="btn" data-act="sign" data-v="-1">− マイナス</button></div>';
+    if(G.phase==='num')return keypad3('OK');
+    return '<p class="ask" style="font-size:18px">たしかめ算: a ÷ x が y になるかな?</p>'+keypad3('OK',true);
+  }
+  if(q.type==='gdraw'){
+    if(G.phase==='pts')return '<button class="btn wide" data-act="place"'+(G.mark?'':' disabled')+'>ここに点を打つ</button><p class="cap">x × y = '+M(q.a)+' になる交点をタップ</p>';
+    if(G.phase==='f1')return '<p class="ask" style="font-size:18px">反比例のグラフの名前は?</p><div class="choices three"><button class="btn small" data-act="wc" data-v="hyp">双曲線</button><button class="btn small" data-act="wc" data-v="line">直線</button><button class="btn small" data-act="wc" data-v="para">放物線</button></div>';
+    return '<p class="ask" style="font-size:18px">このグラフは原点を通る?</p><div class="choices two"><button class="btn small" data-act="wc" data-v="yes">通る</button><button class="btn small" data-act="wc" data-v="no">通らない</button></div>';
+  }
+  if(G.phase==='tap')return '<button class="btn wide" data-act="place"'+(G.mark?'':' disabled')+'>ここに決定</button><p class="cap">曲線がマス目の交点を通るところをタップ</p>';
+  if(G.phase==='sign')return '<p class="ask" style="font-size:18px">a はプラス? マイナス?</p><div class="signs"><button class="btn" data-act="sign" data-v="1">+ プラス</button><button class="btn" data-act="sign" data-v="-1">− マイナス</button></div>';
+  if(G.phase==='gcheck')return '<p class="ask" style="font-size:18px">たしかめ算:a ÷ x が、点の y になるかな?</p>'+keypad3('OK',true);
+  return keypad3('OK');
+}
+function viewPlay(){
+  var q=G.qs[G.i],h=topBar(),v;
+  v=q.type==='meet'?viewMeet(q):q.type==='table'?viewTable(q):q.type==='find'?viewFind(q):q.type==='quest'?viewQuest(q):viewGraph(q);
+  h+='<section class="panel">'+v+'</section>';
+  if(G.fb)h+='<div class="fb hint '+(G.fb.ok?'good':'bad')+'" role="status">'+G.fb.msg+'</div>';
+  h+='<section class="panel">'+controls(q)+'</section>';
+  return h;
+}
+function viewResult(){
+  var n=G.st.n,f=G.firstOK,st=calcStars();
+  if(st>(save.stars[G.st.id]||0)){save.stars[G.st.id]=st;persist();}
+  var title=G.over?'ハートがなくなった…':'ステージクリア!';
+  var sub=G.over?'あと一歩。ヒントを思い出してもう一回!':'1回でせいかい '+f+' / '+n+' 問';
+  return '<section class="panel result"><svg class="bob" width="70" height="78" viewBox="0 0 70 78" aria-hidden="true">'+robo(7.5,1.25,2)+'</svg>'
+    +'<p class="big">'+title+'</p><p class="stars" style="font-size:34px;margin:0">'+starStr(st)+'</p><p>'+sub+'</p>'
+    +'<p class="cap" style="color:var(--text);margin:6px 0">ワークでも <b>①1行に1ステップ</b> ・ <b>②答えの文まで</b> ・ <b>③もとに戻してたしかめる</b></p>'
+    +'<p class="coins" style="justify-content:center;display:flex">'+coinSVG()+'コイン '+save.coins+'</p>'
+    +'<div class="row"><button class="btn" data-act="start" data-id="'+G.st.id+'">もう一回</button><button class="btn plain" data-act="back">ステージへ</button></div></section>';
+}
+function render(){document.getElementById('app').innerHTML=screen==='title'?viewTitle():screen==='play'?viewPlay():viewResult();}
+
+/* ---------- logic ---------- */
+function onChoice(v){
+  var q=G.qs[G.i];if(G.done)return;
+  if(q.type==='meet'){onMeetChoice(v);return;}
+  if(q.type==='find'&&G.phase==='form'){
+    if(v==='adx'){G.phase='place';G.qn=null;step('まず <b>y = a/x</b>。これを書いてから代入しよう。');return;}
+    if(miss('swap',v==='ax'?'それは<b>比例</b>の式。反比例は <b>y = a/x</b>(x × y = a)。':'x と a が逆。反比例は <b>y = a/x</b>。'))return;render();return;
+  }
+  if(q.type==='gdraw'){
+    if(G.phase==='f1'){if(v==='hyp'){G.phase='f2';step('そう! 反比例のグラフは <b>双曲線</b>。');return;}if(miss('word','2本の曲線になっているね。反比例のグラフの名前は <b>双曲線</b>。'))return;render();return;}
+    if(G.phase==='f2'){if(v==='no'){finish('x = 0 では y が決まらないから、原点は通らない。');return;}if(miss('word','グラフをよく見て。x = 0 のとき、0 で割ることはできないね。'))return;render();return;}
+  }
+  if(q.type==='quest'){
+    var p=q.p;
+    if(G.phase==='s0'){if(v==='ask0'){G.phase='s1';step('そう! 聞かれているのは <b>'+p.ask[0]+'</b>。答えの文も、これを答える文になるよ。');return;}if(miss('word','絵の <b>「?」</b> がついているところを見よう。問題文の最後の「〜は何?」も手がかり。'))return;render();return;}
+    if(G.phase==='s1'){if(v==='ok'){G.phase='s2';step('OK! 次は <b>ことばの式</b>。');return;}if(miss('word','「x m の重さを y g」のように、<b>x と y の前にある言葉</b>を見よう。'))return;render();return;}
+    if(G.phase==='s2'){if(q.wo[+v]===p.w){G.phase='s3';step('ことばの式ができた! これで表の y を計算しよう。');return;}if(miss('word','問題文の数で確かめよう。x = '+p.x0+' のとき y = '+p.y0+' になる式はどれ?'))return;render();return;}
+    if(G.phase==='s3k'){if(v===p.k){G.phase='s4f';step((p.k==='prop'?'x が2倍で y も2倍 → 比例':'x が2倍で y は1/2 → 反比例')+'。次は式にしよう。');return;}if(miss('word','x が増えたとき、y は<b>同じ倍</b>で増えた? それとも<b>逆数の倍</b>で減った?'))return;render();return;}
+    if(G.phase==='s4f'){if(v===p.k){G.phase='s4c';step('形OK! 次は a。');return;}if(miss('swap',p.k==='prop'?'比例だから y = ax。':'反比例だから y = a/x。'))return;render();return;}
+  }
+}
+function onPlace(){
+  var q=G.qs[G.i];if(!G.mark)return;var tx=G.mark.x,ty=G.mark.y;
+  if(tx===0||ty===0){G.fb={ok:false,msg:'反比例のグラフは x 軸・y 軸の上を通らないよ。'};SFX.tap();render();return;}
+  var on=tx*ty===q.a;
+  if(q.type==='gdraw'&&G.phase==='pts'){
+    if(on){if(!G.pts.some(function(p){return p.x===tx&&p.y===ty;}))G.pts.push({x:tx,y:ty,fill:tx>0?'#FFC928':'#4FA3F7'});G.mark=null;SFX.place();
+      var pos=G.pts.filter(function(p){return p.x>0;}).length,neg=G.pts.length-pos;
+      if(pos>=2&&neg>=2){G.phase='f1';step('点がそろった! なめらかにつなぐと…2本の曲線になった。');return;}
+      G.fb={ok:true,msg:pos<2?'OK! x がプラスの点をもう少し。':neg<2?'OK! こんどは <b>x がマイナス</b>の点もさがそう。':'OK!'};render();return;}
+    var st;if(tx*ty===-q.a)st=miss('sign','符号チェック! x × y が <b>'+M(q.a)+'</b> になる点。'+(q.a>0?'x がマイナスなら y もマイナス。':'x と y の符号はちがう。'));
+    else st=miss('calc','x × y = '+M(q.a)+' になる点だよ。たとえば x = 1 なら y = '+M(q.a)+'、x = 2 なら y = '+M(q.a/2)+'。');
+    if(st)return;G.mark=null;render();return;
+  }
+  if(q.type==='gread'&&G.phase==='tap'){
+    if(on){G.pt={x:tx,y:ty};G.mark=null;G.phase='sign';step('点が見つかった! 反比例は <b>a = x × y</b>。符号から決めよう。');return;}
+    if(miss('calc','その点は曲線の上にないよ。<b>曲線がマス目の交点をぴったり通るところ</b>をさがそう。'))return;G.mark=null;render();
+  }
+}
+function onGridTap(svg,e){
+  if(!G||(G.phase!=='pts'&&G.phase!=='tap'))return;
+  var r=svg.getBoundingClientRect(),sx=(e.clientX-r.left)*300/r.width,sy=(e.clientY-r.top)*300/r.height;
+  var x=Math.round((sx-C)/U),y=Math.round((C-sy)/U);if(Math.abs(x)>GR||Math.abs(y)>GR)return;
+  G.mark={x:x,y:y};G.fb=null;SFX.tap();render();
+}
+function onChip(k){
+  var q=G.qs[G.i];if(G.phase!=='place')return;
+  var idx=G.boxes[0]===null?0:1;G.boxes[idx]=k;G.fb=null;SFX.place();
+  if(G.boxes[0]&&G.boxes[1]){
+    if(G.boxes[0]==='y'&&G.boxes[1]==='x'){if(q.x<0){G.phase='paren';render();return;}afterPlace();return;}
+    G.boxes=[null,null];if(miss('swap','<b>xとyが入れかわってるよ!</b> y = a ÷ x だから、左の□には <b>y の値('+M(q.y)+')</b>、右の□には x の値。'))return;
+  }
+  render();
+}
+function afterPlace(){G.phase='sign';step('代入OK! y = a ÷ x だから、<b>a = y × x</b>(両方に x をかける)。まず <b>符号</b>。');}
+function onParen(v){if(G.phase!=='paren')return;if(v==='wrap'){G.parenDone=true;SFX.place();afterPlace();return;}G.fb={ok:false,msg:'このままだと「÷ −」が並んで符号を見落としやすい。<b>マイナスの数は ( ) に入れよう。</b>'};SFX.tap();render();}
+function onSign(v){
+  var q=G.qs[G.i];if(G.phase!=='sign')return;var a=q.a,right=a>0?1:-1;
+  if(v===right){G.sign=v;G.phase='num';step('符号OK! あとは数を入れよう。');return;}
+  var xs,ys;if(q.type==='find'){xs=q.x;ys=q.y;}else{xs=G.pt.x;ys=G.pt.y;}
+  if(miss('sign','<b>符号チェック!</b> ('+(ys<0?'−':'+')+') × ('+(xs<0?'−':'+')+') = ('+(right<0?'−':'+')+')。かけ算は 同じ符号なら+、ちがう符号なら−。'))return;render();
+}
+function onKey(k){
+  if(!G||G.done)return;SFX.tap();
+  if(k==='⌫'){if(G.input)G.input=G.input.slice(0,-1);else G.neg=false;}
+  else if(k==='−')G.neg=!G.neg;
+  else if(/^\d$/.test(k)&&G.input.length<6)G.input+=k;
+  render();
+}
+function onOK(){
+  var q=G.qs[G.i];if(G.done)return;
+  if(!G.input){G.fb={ok:false,msg:'数を入れてからOKを押そう。'};render();return;}
+  var v=(G.neg?-1:1)*parseInt(G.input,10),st;
+  if(q.type==='table'){
+    if(v===q.y){finish();return;}
+    if(Math.abs(v)===Math.abs(q.y))st=miss('sign','<b>数は合ってる! 符号をチェック。</b> わり算も 同じ符号なら+、ちがう符号なら−。');
+    else st=miss('calc','y = '+M(q.a)+' ÷ '+P(q.ask)+' を計算しよう。反比例は x × y がいつも '+M(q.a)+'。');
+    if(st)return;G.input='';G.neg=false;render();return;
+  }
+  if(q.type==='find'){
+    if(G.phase==='num'){if(Math.abs(v)===Math.abs(q.a)&&!G.neg){G.phase='check';G.input='';G.neg=false;step('a が出た! 最後に<b>たしかめ算</b>。a ÷ x が y になるかな?');return;}
+      if(miss('calc',Math.abs(q.y)+' × '+Math.abs(q.x)+' を計算しよう。反比例は a = x × y(比例の y ÷ x とまちがえないで)。'))return;G.input='';render();return;}
+    if(G.phase==='check'){if(v===q.y){finish('ロボのノートと同じ順番で、ワークにも書こう。');return;}
+      if(Math.abs(v)===Math.abs(q.y))st=miss('sign','<b>符号チェック!</b> わり算も 同じ符号なら+、ちがう符号なら−。');else st=miss('calc',P(q.a)+' ÷ '+P(q.x)+' を計算しなおそう。');
+      if(st)return;G.input='';G.neg=false;render();return;}
+  }
+  if(q.type==='gread'&&G.phase==='gcheck'){if(v===G.pt.y){finish();return;}if(miss(Math.abs(v)===Math.abs(G.pt.y)?'sign':'calc',Math.abs(v)===Math.abs(G.pt.y)?'符号をチェック! わり算も 同じ符号なら+、ちがう符号なら−。':P(q.a)+' ÷ '+P(G.pt.x)+' を計算しなおそう。'))return;G.input='';G.neg=false;render();return;}
+  if(q.type==='gread'&&G.phase==='num'){if(Math.abs(v)===Math.abs(q.a)&&!G.neg){G.phase='gcheck';G.input='';G.neg=false;step('a が出た! <b>合言葉③</b>:もとに戻して たしかめよう。a ÷ x が点の y になるかな?');return;}if(miss('calc',Math.abs(G.pt.x)+' × '+Math.abs(G.pt.y)+' を計算しよう。'))return;G.input='';render();return;}
+  if(q.type==='quest'){
+    var p=q.p;
+    if(G.phase==='s3'){if(v===tqy(p)){G.phase='s3k';G.input='';step('表ができた! x と y の変わり方を見よう。');return;}if(miss('calc','ことばの式 <b>'+p.w+'</b> に x = '+p.tx+' を入れて計算しよう。'))return;G.input='';render();return;}
+    if(G.phase==='s4t'){var qc=qcheck(p);if(v===qc.val){G.phase='s5';G.input='';step(qc.goal+' と同じ! これで自信を持って <b>答えの文</b>が書ける。でもまだクリアじゃないよ。');return;}if(miss('calc',qc.expr+' を計算しなおそう。'))return;G.input='';render();return;}
+    if(G.phase==='s4c'){if(v===p.c){G.phase='s4s';G.input='';step('式ができた! '+(p.known==='y'?'y':'x')+' に '+p.kv+' を入れて、1行ずつ解こう。');return;}if(miss('calc',p.k==='prop'?'比例の a は <b>y ÷ x</b>。'+p.y0+' ÷ '+p.x0+' は?':'反比例の a は <b>x × y</b>。'+p.x0+' × '+p.y0+' は?'))return;G.input='';render();return;}
+    if(G.phase==='s4s'){if(v===p.ans){G.phase='s4t';G.input='';step('解けた! 答えの文の前に <b>合言葉③</b>:答えを問題に戻して たしかめよう。');return;}if(miss('calc','ノートの式を1行ずつ計算しよう:'+p.lines[p.lines.length-1]+'。'))return;G.input='';render();return;}
+  }
+}
+function onQDone(){
+  var q=G.qs[G.i],p=q.p;if(G.phase!=='s5')return;
+  if(+G.qn===p.ans&&G.qu===p.unit){finish('答えの文まで書けて <b>クリア</b>! ワークでも最後の1行まで。');return;}
+  var msg=+G.qn!==p.ans?'問題が聞いているのは何? 「'+p.pre+'…」に入るのは、<b>求めた答えの数</b>。':'<b>単位</b>をチェック! 何を聞かれているか(長さ? 時間? 個数?)で単位が決まるよ。';
+  if(miss('word',msg))return;render();
+}
+function onNext(){var fin=G.i+1>=G.st.n;if(fin)logResult('クリア');G.i++;if(fin){screen='result';}else resetQ();render();window.scrollTo(0,0);if(fin)SFX.clear();else SFX.tap();}
+
+document.getElementById('app').addEventListener('click',function(e){
+  var svg=e.target.closest('svg.tapgrid');if(svg){onGridTap(svg,e);return;}
+  var b=e.target.closest('button');if(!b||b.disabled)return;
+  var a=b.dataset.act;
+  if(a==='start')startStage(b.dataset.id);
+  else if(a==='back'){if(screen==='play'&&G&&(G.i>0||G.done))logResult('途中でやめた');screen='title';G=null;render();window.scrollTo(0,0);}
+  else if(a==='mx')onMeetX(+b.dataset.v);
+  else if(a==='trow'){G.rows[b.dataset.v]=!G.rows[b.dataset.v];SFX.tap();render();}
+  else if(a==='wc')onChoice(b.dataset.v);
+  else if(a==='chip')onChip(b.dataset.k);
+  else if(a==='box'){if(G.phase==='place'){G.boxes[+b.dataset.i]=null;if(+b.dataset.i===0&&G.boxes[1]){G.boxes[0]=G.boxes[1];G.boxes[1]=null;}render();}}
+  else if(a==='paren')onParen(b.dataset.v);
+  else if(a==='sign')onSign(+b.dataset.v);
+  else if(a==='place')onPlace();
+  else if(a==='key')onKey(b.dataset.v);
+  else if(a==='ok')onOK();
+  else if(a==='qn'){G.qn=+b.dataset.v;SFX.tap();render();}
+  else if(a==='qu'){G.qu=b.dataset.v;SFX.tap();render();}
+  else if(a==='qdone')onQDone();
+  else if(a==='next')onNext();
+  else if(a==='sound'){save.sound=!save.sound;persist();render();if(save.sound)SFX.coin();}
+});
+document.addEventListener('keydown',function(e){
+  if(screen!=='play'||!G)return;
+  if(G.done&&e.key==='Enter'){onNext();return;}
+  if(!document.querySelector('[data-act=ok]'))return;
+  if(/^\d$/.test(e.key))onKey(e.key);else if(e.key==='Backspace')onKey('⌫');else if(e.key==='-')onKey('−');else if(e.key==='Enter')onOK();
+});
+render();
+flush();
+})();
+</script>
+</body>
+</html>
